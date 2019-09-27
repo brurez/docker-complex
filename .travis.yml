@@ -1,0 +1,20 @@
+language: generic
+sudo: required
+services:
+  - docker
+before_install:
+  - docker build -t brurez/docker-complex-client-t -f ./client/Dockerfile.dev ./client
+script:
+  - docker run -e CI=true brurez/docker-complex-client-t npm run test -- --coverage
+after_success:
+  - docker build -t brurez/docker-complex-client ./client
+  - docker build -t brurez/docker-complex-nginx ./nginx
+  - docker build -t brurez/docker-complex-server ./server
+  - docker build -t brurez/docker-complex-worker ./worker
+  # Log in to the docker CLI
+  -  echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Push images to docker hub
+  - docker push brurez/docker-complex-client
+  - docker push brurez/docker-complex-nginx
+  - docker push brurez/docker-complex-server
+  - docker push brurez/docker-complex-worker
