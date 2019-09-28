@@ -18,3 +18,16 @@ after_success:
   - docker push brurez/docker-complex-nginx
   - docker push brurez/docker-complex-server
   - docker push brurez/docker-complex-worker
+deploy:
+  provider: elasticbeanstalk
+  region: "us-east-2"
+  app: "docker-complex"
+  env: "DockerComplex-env"
+  bucket_name: "elasticbeanstalk-us-east-2-363341556305"
+  bucket_path: "docker-complex"
+  on:
+    branch: master
+  access_key_id:
+    secure: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: $AWS_SECRET_KEY
